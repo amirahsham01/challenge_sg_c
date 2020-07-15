@@ -5,4 +5,27 @@
             <a class="btn btn-success" href="/new">Add List</a>
           </div>
         </div>
+    </div>
+
+    <div class="col-md-9">
+      <div class="row">
+      <% lists.forEach(list => { %>
+        <div class="col-md-6 mb-3">
+          <div class="card">
+            <div class="card-body">
+              <h5 class="card-title">
+              </h5>
+              <p class="text-muted card-text text-capitalize">
+               <% list.lists.forEach(l => {%>
+                <% l.items.forEach(item => {%>
+                <%= item.item %>
+                <% }) %>
+                <% }) %>
+              </p>
+            </div>
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </div>
 </div>

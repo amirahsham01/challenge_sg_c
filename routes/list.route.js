@@ -1,48 +1,61 @@
 const router = require("express").Router();
 const List = require("../models/list.model");
+const User = require("../models/user.model");
 
 router.get("/", (req, res) => {
     res.render("auth/signin");
 });
-  
-router.get("/list", (req, res) => {
-    res.render("lists/list");
+
+router.get("/list", async (req, res) => {
+    try {
+      let lists = await List.find();
+      console.log(lists);
+    
+      res.render("lists/list", { lists });
+    } catch (error) {
+      console.log(error);
+    }
 });
 
 router.get("/new", async (req, res) => {
     try {
       let lists = await List.find();
-  
+      console.log(lists[0]);
+    
       res.render("lists/new", { lists });
     } catch (error) {
       console.log(error);
     }
 });
 
-router.post("/new", (req, res) => {
-    //   console.log(req.body);
-    let list = new List(req.body);
-    console.log(list);
+router.post("/new", async (req, res) => {
+    try{
+        let {item,quantity,deliveryDate,status=0} = req.body;
+    
+        // let hashedPassword = await bcrypt.hash(password, saltRounds);
+        let list = new List({
+          lists: [{items:[{item,quantity}],
+          deliveryDate,
+          status}]
+        })
+          
+            let savedList = await list.save();
+
+            if(savedList){
+                res.redirect("/");
+            }
+        }catch(error){
+            console.log(error);
+        }
+    
   
-  
-    //save restaurant first
     list
-      .save()
-      .then(() => {
-        //restaurant : { _id: , ownedBy: , name : ,}
-        //if saved then save user
-        User.findById(user.lists).then((user) => {
-          //push into restaurants array in user model
-          user.lists.push(list._id);
-  
-          user.save().then(() => {
-            //if sucess redirect to home page
-            res.redirect("/");
-          });
-        });
-      })
-      .catch((err) => {
-        console.log(err);
+    .save()
+    .then(() => {
+      res.redirect("/list");
+    })
+    .catch((err) => {
+      console.log(err);
     });
 });
   
